@@ -74,7 +74,7 @@ function markDone() {
       return openMenu();
     } else {
       console.log("this is not in your task list");
-      return deleteTask();
+      return markDone();
     }
   });
 }
