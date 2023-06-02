@@ -6,67 +6,85 @@ const { toUnicode } = require("punycode");
 const readline = require("readline");
 var rl = readline.createInterface(process.stdin, process.stdout);
 
-// // const showtasks = () => {
-// //     console.log(tasks)
-// // }
-
-// // showtasks()
-gi
-// EXEMPLE
-// rl.question('What is your age? ', (age) => {
-//     console.log('Your age is: ' + age);
-//     rl.close();
-// });
-
-// let taskList = ["task1","task2"];
-
+//Array of objects for task list
 let taskList = [
-  { taskname: "task1", isdone: "todo" },
-  { taskname: "task2", isdone: "todo" },
+  //   { taskname: "task1", isdone: "-> to do" },
+  //   { taskname: "task2", isdone: "-> to do" },
 ];
 
+//Function calling the task presents in the task list
 function showTaskList() {
-  let i = taskList.length;
-  taskList.forEach((i) => console.log(i));
-  console.log(i);
+  let a = taskList.length;
+  if (a <= 0) {
+    console.log("\n There are no tasks in your list for now...\n");
+  } else {
+    console.log(
+      "these are your current tasks:\n \n" +
+        taskList.map((a) => `${a.taskname} ${a.isdone}`).join("\r\n") +
+        "\n"
+    );
+  }
   return openMenu();
 }
 
+//Function adding a task to the task list and setting its isdone status to "to do"
 function addTask() {
   rl.question("What task do you want to add? ", function (input) {
-    taskList.push(input);
-    let i = taskList.length;
-    taskList.forEach((i) => console.log(i));
-    console.log(i);
+    const OBJ = { taskname: input, isdone: "-> to do" };
+    taskList.push(OBJ);
+    console.log(`\nYour task ${input} has been added to the list\n`);
     return openMenu();
   });
 }
 
+//Function removing a task from the task list
 function deleteTask() {
-  console.log("these are your current tasks:\n" + taskList);
+  console.log(
+    "these are your current tasks:\n \n" +
+      taskList.map((a) => `${a.taskname} ${a.isdone}`).join("\r\n") +
+      "\n"
+  );
   rl.question(
     "type the name of the task you want to remove: ",
     function (input) {
-      const index = String(taskList.indexOf(input));
-      if (index > 1) {
-        taskList.splice(index, 1);
+      const INDEX2 = taskList.findIndex((v) => v.taskname == String(input));
+      if (INDEX2 > -1 && INDEX2 <= taskList.length) {
+        taskList.splice(INDEX2, 1);
+        console.log(input + " has been removed");
+        return openMenu();
+      } else {
+        console.log("this is not in your task list");
+        return deleteTask();
       }
-      console.log(taskList.taskname);
-      return openMenu();
     }
   );
 }
 
+//Function setting the status of a specific task to "DONE"
 function markDone() {
-  console.log("marking a task as done");
-  exit();
+  console.log(
+    "these are your current tasks:\n \n" +
+      taskList.map((a) => `${a.taskname} ${a.isdone}`).join("\r\n") +
+      "\n"
+  );
+  rl.question("What task do you want to mark as done? ", function (input) {
+    const INDEX3 = taskList.findIndex((v) => v.taskname == String(input));
+    if (INDEX3 > -1 && INDEX3 <= taskList.length) {
+      taskList[INDEX3].isdone = "-> DONE";
+      return openMenu();
+    } else {
+      console.log("this is not in your task list");
+      return deleteTask();
+    }
+  });
 }
 
+//Function to exit the program
 function exit() {
   return process.exit();
-  exit();
 }
 
+//Menu to select the options
 function openMenu() {
   rl.question(
     `Welcome to your task manager, Press:
@@ -79,7 +97,6 @@ function openMenu() {
     function (choiceNb) {
       switch (choiceNb) {
         case "1":
-          console.log("Showing your current tasks:");
           return showTaskList();
           break;
         case "2":
@@ -95,8 +112,8 @@ function openMenu() {
           return exit();
           break;
         default:
-          console.log("Sorry, you need to type a number between 1 & 6");
-          return exit();
+          console.log("Sorry, you need to type a number between 1 & 5\n");
+          return openMenu();
       }
     }
   );
